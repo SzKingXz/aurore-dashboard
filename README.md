@@ -1,119 +1,160 @@
-# AURØRE Dashboard
+# 🌟 AURØRE Dashboard
 
-🚀 Modern Discord Bot Dashboard built with React, Vite, and Tailwind CSS
+**Dashboard interactivo y funcional para gestión de bots de Discord con diseño cyberpunk**
 
-## Features
+![Status](https://img.shields.io/badge/status-active-success.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-- ✨ Real-time statistics and monitoring
-- 📊 Interactive charts with Recharts
-- 🎨 Cyberpunk/tech aesthetic design
-- 🔒 Moderation tools and action logs
-- 💬 Embed message constructor
-- 📱 Fully responsive design
-- ⚡ Fast performance with Vite
-- 🌙 Dark mode by default
+## 🚀 Demo en Vivo
 
-## Tech Stack
+**👉 [Ver Dashboard](https://szkingxz.github.io/aurore-dashboard/)**
 
-- **React 18** - UI library
-- **Vite** - Build tool
-- **Tailwind CSS** - Styling
-- **Recharts** - Data visualization
-- **Lucide React** - Icons
+## ✨ Características
 
-## Getting Started
+### 📊 Dashboard Principal
+- **Estadísticas en tiempo real**: Usuarios totales, usuarios activos, mensajes y comandos
+- **Gráficos interactivos**: Visualización de actividad con Recharts
+- **Sistema de logs**: Seguimiento de eventos del servidor en tiempo real
+- **Top Commands**: Ranking de comandos más utilizados
 
-### Prerequisites
+### 🛡️ Sistema de Moderación
+- **Quick Actions**: Ban, Kick, Warn y Timeout rápidos
+- **Estadísticas de moderación**: Bans y warns del día
+- **Auto-Mod activo**: Sistema de moderación automática
+- **Modales funcionales**: Formularios para acciones de moderación
 
-- Node.js (v16 or higher)
-- npm or yarn
+### 💬 Constructor de Embeds
+- **Editor en tiempo real**: Crea embeds personalizados
+- **Preview instantáneo**: Visualiza los cambios al instante
+- **Selector de colores**: Personaliza el color del embed
+- **Campos configurables**: Título, descripción, imágenes y thumbnails
 
-### Installation
+### 🎨 Diseño
+- **Tema cyberpunk/tech**: Colores cyan y purple con efectos neón
+- **Partículas animadas**: Fondo dinámico con partículas flotantes
+- **Efectos hover**: Interacciones suaves y atractivas
+- **Sidebar colapsable**: Optimiza el espacio de trabajo
+- **Responsive**: Adaptable a diferentes tamaños de pantalla
 
-1. Clone the repository:
+## 🛠️ Tecnologías
+
+- **React 18** - Framework frontend
+- **Vite** - Build tool ultrarrápido
+- **Tailwind CSS** - Estilos utility-first
+- **Recharts** - Gráficos interactivos
+- **Lucide React** - Iconos modernos
+- **GitHub Pages** - Hosting gratuito
+
+## 📦 Instalación Local
+
 ```bash
-git clone https://github.com/YOUR_USERNAME/aurore-dashboard.git
+# Clonar el repositorio
+git clone https://github.com/SzKingXz/aurore-dashboard.git
 cd aurore-dashboard
-```
 
-2. Install dependencies:
-```bash
+# Instalar dependencias
 npm install
-```
 
-3. Start the development server:
-```bash
+# Iniciar servidor de desarrollo
 npm run dev
 ```
 
-4. Open your browser and visit `http://localhost:3000`
-
-## Build for Production
+## 🚀 Scripts Disponibles
 
 ```bash
-npm run build
+npm run dev      # Servidor de desarrollo
+npm run build    # Build de producción
+npm run preview  # Preview del build
+npm run deploy   # Deploy a GitHub Pages
 ```
-
-The built files will be in the `dist` directory.
-
-## Deploy to GitHub Pages
-
-1. Update the `base` path in `vite.config.js` with your repository name
-2. Run:
-```bash
-npm run deploy
-```
-
-## Project Structure
+## 🎯 Estructura del Proyecto
 
 ```
 aurore-dashboard/
 ├── src/
 │   ├── components/
-│   │   └── BotDashboard.jsx
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-├── public/
-├── index.html
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-└── postcss.config.js
+│   │   └── BotDashboard.jsx  # Componente principal
+│   ├── App.jsx               # App root
+│   ├── main.jsx             # Entry point
+│   └── index.css            # Estilos globales
+├── public/                  # Assets estáticos
+├── dist/                    # Build de producción
+├── package.json            # Dependencias
+├── vite.config.js         # Configuración Vite
+└── tailwind.config.js     # Configuración Tailwind
 ```
 
-## Features Overview
+## 🎨 Paleta de Colores
 
-### Dashboard
-- Total users statistics
-- Active users monitoring
-- Message tracking
-- Command usage analytics
+- **Primary Cyan**: `#00E5FF` - Acentos principales
+- **Primary Purple**: `#7C6CFF` - Acentos secundarios
+- **Background Dark**: `#0B0E14` - Fondo principal
+- **Surface**: `#1C1F26` - Tarjetas y superficies
+- **Text**: `#EDEFF4` - Texto principal
 
-### Moderation
-- Quick action buttons (Ban, Kick, Warn, Timeout)
-- Auto-moderation settings
-- Real-time logs
-- User management
+## 🔧 Configuración de GitHub Pages
 
-### Messages
-- Embed constructor with live preview
-- Customizable colors and images
-- Welcome messages
-- Announcements system
+El proyecto está configurado para desplegarse automáticamente en GitHub Pages:
 
-## Contributing
+1. El `base` en `vite.config.js` está configurado como `/aurore-dashboard/`
+2. Usa `npm run deploy` para desplegar cambios
+3. La rama `gh-pages` se crea automáticamente
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+## 📝 Funcionalidades Implementadas
 
-## License
+### ✅ Completado
+- [x] Dashboard con estadísticas
+- [x] Gráficos de actividad
+- [x] Sistema de logs
+- [x] Módulo de moderación
+- [x] Constructor de embeds funcional
+- [x] Sidebar navegable
+- [x] Sistema de notificaciones
+- [x] Modales interactivos
+- [x] Tooltips informativos
+- [x] Tema dark con efectos
 
-MIT License
+### 🚧 En Desarrollo
+- [ ] Integración con API real
+- [ ] Sistema de autenticación
+- [ ] Base de datos
+- [ ] Más módulos (Economía, Juegos, Música)
+- [ ] Modo claro/oscuro
 
-## Author
+## 🤝 Contribuir
 
-**AURØRE Team**
+Las contribuciones son bienvenidas! Para contribuir:
+
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add: AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más información.
+
+## 👤 Autor
+
+**SzKingXz**
+- GitHub: [@SzKingXz](https://github.com/SzKingXz)
+- Proyecto: [aurore-dashboard](https://github.com/SzKingXz/aurore-dashboard)
+
+## 🌟 Showcase
+
+### Dashboard Principal
+![Dashboard Overview](https://via.placeholder.com/800x400/0B0E14/00E5FF?text=Dashboard+Overview)
+
+### Sistema de Moderación
+![Moderation](https://via.placeholder.com/800x400/0B0E14/00E5FF?text=Moderation+System)
+
+### Constructor de Embeds
+![Embed Builder](https://via.placeholder.com/800x400/0B0E14/00E5FF?text=Embed+Builder)
 
 ---
 
-Made with ❤️ and ⚡ by the AURØRE Team
+⭐️ **Si te gusta este proyecto, dale una estrella en GitHub!**
+
+🚀 **Desarrollado con ❤️ usando React + Vite**
