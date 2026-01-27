@@ -1,14 +1,14 @@
 # Dependencies
 node_modules/
-/.pnp
+.pnp
 .pnp.js
 
 # Testing
-/coverage
+coverage/
 
 # Production
-/build
-/dist
+build/
+dist/
 
 # Misc
 .DS_Store
@@ -21,7 +21,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# IDE
+# Editor
 .vscode/
 .idea/
 *.swp
@@ -30,3 +30,19 @@ yarn-error.log*
 
 # OS
 Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+.vite/
+
+# Archivos temporales
+*.tmp
+*.bak
+limpiar.bat
+
+# Archivos de configuración locales
+server.cjs

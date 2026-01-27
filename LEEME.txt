@@ -1,0 +1,21 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║            EJECUTA ESTE ARCHIVO AHORA:                        ║
+║                                                               ║
+║            EJECUTAR-ESTO-AHORA.bat                            ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Hará TODO automáticamente:
+
+1. Borrará TODOS los archivos innecesarios
+2. Configurará Discord OAuth2
+3. Subirá todo a GitHub
+4. Desplegará a GitHub Pages
+5. Se auto-eliminará
+
+Necesitas tener:
+- Tu usuario de GitHub
+- El CLIENT_SECRET de Discord
+
+¡Eso es todo!

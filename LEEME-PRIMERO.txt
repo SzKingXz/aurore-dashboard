@@ -1,0 +1,51 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║                ✅ TODO LISTO PARA EJECUTAR ✅                 ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+EJECUTA ESTE ARCHIVO:
+
+    📁 EJECUTAR-TODO.bat
+
+Este script hará AUTOMÁTICAMENTE:
+
+✅ Quitar partículas y grid del fondo (ya no marea)
+✅ Configurar OAuth2 real de Discord
+✅ Limpiar TODOS los archivos innecesarios de tu PC
+✅ Subir todo a GitHub
+✅ Hacer deploy a GitHub Pages
+
+══════════════════════════════════════════════════════════════
+
+LO QUE NECESITAS TENER LISTO:
+
+1. Discord Developer Portal abierto:
+   https://discord.com/developers/applications
+   
+2. Tu CLIENT_SECRET copiado
+
+3. Tu usuario de GitHub
+
+══════════════════════════════════════════════════════════════
+
+SIMPLEMENTE:
+
+1. Doble click en: EJECUTAR-TODO.bat
+2. Sigue las instrucciones en pantalla
+3. ¡Listo!
+
+══════════════════════════════════════════════════════════════
+
+RESULTADO FINAL:
+
+✓ Dashboard sin fondo mareante
+✓ OAuth2 funcionando (pide tu cuenta de Discord)
+✓ Foto de perfil real
+✓ PC limpia (solo archivos necesarios)
+✓ Todo en GitHub
+✓ Dashboard público en: https://TU-USUARIO.github.io/aurore-dashboard/
+
+══════════════════════════════════════════════════════════════
+
+¿LISTO? → Ejecuta EJECUTAR-TODO.bat ahora!
