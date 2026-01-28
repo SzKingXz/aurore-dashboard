@@ -236,10 +236,13 @@ const BotDashboard = () => {
 
   const menuItems = [
     { id: 'overview', label: 'Dashboard', icon: BarChart3, submenu: [] },
+    { id: 'commands', label: 'Commands', icon: Command, submenu: [] },
     { id: 'moderation', label: 'Moderation', icon: Shield, submenu: [
         { id: 'mod-actions', label: 'Actions' },
+        { id: 'mod-logs', label: 'Logs' },
         { id: 'mod-automod', label: 'Auto-Mod' },
       ] },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Activity, submenu: [] },
     { id: 'roles', label: 'Roles', icon: Users, submenu: [] },
     { id: 'messages', label: 'Messages', icon: MessageSquare, submenu: [] },
     { id: 'settings', label: 'Settings', icon: Settings, submenu: [] }
@@ -373,6 +376,148 @@ const BotDashboard = () => {
                       ))}
                     </div>
                   )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // SECCIÓN DE COMANDOS
+    if (activeSection === 'commands') {
+      const botCommands = [
+        { name: '/help', description: 'Muestra todos los comandos disponibles', category: 'General', uses: 1250 },
+        { name: '/stats', description: 'Muestra estadísticas del servidor', category: 'Stats', uses: 890 },
+        { name: '/leaderboard', description: 'Muestra el top de usuarios', category: 'Stats', uses: 650 },
+        { name: '/ban', description: 'Banea a un usuario', category: 'Moderación', uses: 45 },
+        { name: '/kick', description: 'Expulsa a un usuario', category: 'Moderación', uses: 78 },
+        { name: '/warn', description: 'Advierte a un usuario', category: 'Moderación', uses: 156 },
+        { name: '/clear', description: 'Limpia mensajes', category: 'Moderación', uses: 234 },
+        { name: '/role', description: 'Gestiona roles', category: 'Administración', uses: 189 },
+        { name: '/play', description: 'Reproduce música', category: 'Música', uses: 2340 },
+        { name: '/skip', description: 'Salta canción', category: 'Música', uses: 1890 },
+      ];
+
+      return (
+        <div className="space-y-6">
+          <div className="bg-gray-800 rounded-lg p-6 border border-cyan-500/10">
+            <h2 className="text-lg font-bold text-white mb-4 uppercase flex items-center gap-2">
+              <Command className="w-5 h-5 text-cyan-400" />
+              Comandos del Bot
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {botCommands.map((cmd, idx) => (
+                <div key={idx} className="bg-gray-900 rounded-lg p-4 border border-cyan-500/20 hover:border-cyan-500/50 transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-cyan-400 font-mono font-bold">{cmd.name}</span>
+                    <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded">{cmd.category}</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-2">{cmd.description}</p>
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <Activity className="w-3 h-3" />
+                    {cmd.uses} usos
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // SECCIÓN DE LEADERBOARD
+    if (activeSection === 'leaderboard') {
+      const categories = [
+        { id: 'messages', name: 'Mensajes', icon: MessageCircle },
+        { id: 'voice', name: 'Tiempo en Voz', icon: Music },
+        { id: 'level', name: 'Nivel', icon: Activity },
+      ];
+
+      return (
+        <div className="space-y-6">
+          <div className="flex gap-2 mb-6">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                className="px-4 py-2 bg-gray-800 border border-cyan-500/20 rounded-lg text-cyan-400 hover:bg-gray-900 font-mono text-sm flex items-center gap-2"
+              >
+                <cat.icon className="w-4 h-4" />
+                {cat.name}
+              </button>
+            ))}
+          </div>
+
+          <div className="bg-gray-800 rounded-lg p-6 border border-cyan-500/10">
+            <h2 className="text-lg font-bold text-white mb-4 uppercase flex items-center gap-2">
+              <Activity className="w-5 h-5 text-cyan-400" />
+              Top 20 Usuarios
+            </h2>
+            <div className="space-y-2">
+              {filterData(serverData?.stats?.topUsers || [], searchQuery).slice(0, 20).map((user, idx) => (
+                <div key={idx} className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
+                  idx < 3 ? 'bg-gradient-to-r from-yellow-500/10 to-yellow-500/5 border border-yellow-500/30' : 'bg-gray-900 border border-cyan-500/10'
+                }`}>
+                  <span className={`text-2xl font-bold ${idx < 3 ? 'text-yellow-400' : 'text-cyan-400'}`}>
+                    {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}
+                  </span>
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.username} className="w-12 h-12 rounded-full" />
+                  ) : (
+                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                      {user.username?.charAt(0) || '?'}
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <p className="font-bold text-white">{user.username}</p>
+                    <p className="text-xs text-gray-400">{user.messages} mensajes • Nivel {user.level}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-cyan-400 font-bold">{user.xp} XP</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // SECCIÓN DE MODERACIÓN
+    if (activeSection === 'mod-actions' || activeSection === 'mod-logs') {
+      const recentActions = [
+        { type: 'ban', user: 'Usuario123', moderator: 'ModAdmin', reason: 'Spam', time: '2 min' },
+        { type: 'kick', user: 'Troll456', moderator: 'ModAdmin', reason: 'Lenguaje inapropiado', time: '15 min' },
+        { type: 'warn', user: 'Newbie789', moderator: 'Helper1', reason: 'Flood', time: '1 hora' },
+        { type: 'timeout', user: 'Spammer', moderator: 'ModAdmin', reason: 'Raid', time: '3 horas' },
+      ];
+
+      return (
+        <div className="space-y-6">
+          <div className="bg-gray-800 rounded-lg p-6 border border-cyan-500/10">
+            <h2 className="text-lg font-bold text-white mb-4 uppercase flex items-center gap-2">
+              <Shield className="w-5 h-5 text-red-400" />
+              Acciones de Moderación Recientes
+            </h2>
+            <div className="space-y-3">
+              {recentActions.map((action, idx) => (
+                <div key={idx} className="bg-gray-900 rounded-lg p-4 border border-red-500/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className={`px-3 py-1 rounded font-mono text-xs ${
+                        action.type === 'ban' ? 'bg-red-500/20 text-red-400' :
+                        action.type === 'kick' ? 'bg-orange-500/20 text-orange-400' :
+                        action.type === 'warn' ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-purple-500/20 text-purple-400'
+                      }`}>
+                        {action.type.toUpperCase()}
+                      </span>
+                      <span className="text-white font-bold">{action.user}</span>
+                    </div>
+                    <span className="text-xs text-gray-500">{action.time} ago</span>
+                  </div>
+                  <p className="text-sm text-gray-400 mb-1">Razón: {action.reason}</p>
+                  <p className="text-xs text-gray-500">Moderador: {action.moderator}</p>
                 </div>
               ))}
             </div>
