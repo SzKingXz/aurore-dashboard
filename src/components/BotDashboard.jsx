@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Settings, Users, Shield, MessageSquare, DollarSign, Gamepad2, Bell, Activity, BarChart3, Command, MessageCircle, Music, ChevronDown, ChevronRight, LogOut, User, Zap, X, ArrowRight, Server, Link as LinkIcon } from 'lucide-react';
+import { Settings, Users, Shield, MessageSquare, DollarSign, Gamepad2, Bell, Activity, BarChart3, Command, MessageCircle, Music, ChevronDown, ChevronRight, LogOut, User, Zap, X, ArrowRight, Server, Link as LinkIcon, Search, Download, Moon, Sun, Clock, Filter } from 'lucide-react';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'https://aurore-backend-j7it.onrender.com/api';
 
 const BotDashboard = () => {
   const [view, setView] = useState('landing');
@@ -22,6 +22,13 @@ const BotDashboard = () => {
     dashboardAccess: false,
     other: true
   });
+  
+  // Nuevas funciones
+  const [searchQuery, setSearchQuery] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+  const [timePeriod, setTimePeriod] = useState('24h'); // 24h, 7d, 30d
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   const [randomPhrase] = useState([
     "¡Gestiona tu servidor de Discord como un profesional! 🚀",
@@ -177,6 +184,56 @@ const BotDashboard = () => {
     return { admin: adminRoles, dashboardAccess: dashboardRoles, other: otherRoles };
   };
 
+  // Función de búsqueda
+  const filterData = (data, query) => {
+    if (!query) return data;
+    return data.filter(item => 
+      item.username?.toLowerCase().includes(query.toLowerCase()) ||
+      item.name?.toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
+  // Función de exportación a CSV
+  const exportToCSV = (data, filename) => {
+    if (!data || data.length === 0) {
+      alert('No hay datos para exportar');
+      return;
+    }
+    const headers = Object.keys(data[0]).join(',');
+    const rows = data.map(row => Object.values(row).join(',')).join('\n');
+    const csv = `${headers}\n${rows}`;
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  // Función para cambiar período de tiempo
+  const changeTimePeriod = (period) => {
+    setTimePeriod(period);
+    if (selectedServer) {
+      loadServerData(selectedServer, false);
+    }
+  };
+
+  // Función para toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle('dark');
+  };
+
+  // Función para agregar notificación
+  const addNotification = (message, type = 'info') => {
+    const id = Date.now();
+    setNotifications(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    }, 5000);
+  };
+
   const menuItems = [
     { id: 'overview', label: 'Dashboard', icon: BarChart3, submenu: [] },
     { id: 'moderation', label: 'Moderation', icon: Shield, submenu: [
@@ -245,7 +302,7 @@ const BotDashboard = () => {
                 <span className="text-purple-400">›</span> Top Usuarios (Más Mensajes)
               </h3>
               <div className="space-y-3">
-                {serverData.stats.topUsers.slice(0, 10).map((user, idx) => (
+                {filterData(serverData.stats.topUsers, searchQuery).slice(0, 10).map((user, idx) => (
                   <div key={idx} className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg hover:bg-gray-900/80 transition-all">
                     <span className="text-lg font-bold text-cyan-400">{idx + 1}</span>
                     {user.avatar ? (
@@ -405,6 +462,95 @@ const BotDashboard = () => {
             <div><h1 className="text-2xl font-bold text-white">{serverData?.name}</h1><p className="text-xs text-cyan-400 font-mono"><span className="w-1.5 h-1.5 bg-cyan-400 rounded-full inline-block mr-1 animate-pulse"></span>Actualización cada 30s</p></div>
           </div>
           <div className="flex items-center gap-4">
+            {/* Barra de búsqueda */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Buscar usuarios, roles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 bg-gray-900/50 border border-cyan-500/20 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500/50 focus:outline-none font-mono text-xs w-64"
+              />
+            </div>
+            
+            {/* Selector de período */}
+            <div className="flex gap-1 bg-gray-900/50 border border-cyan-500/20 rounded-lg p-1">
+              {['24h', '7d', '30d'].map((period) => (
+                <button
+                  key={period}
+                  onClick={() => changeTimePeriod(period)}
+                  className={`px-3 py-1 rounded font-mono text-xs transition-all ${
+                    timePeriod === period
+                      ? 'bg-cyan-500 text-gray-900 font-bold'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {period}
+                </button>
+              ))}
+            </div>
+
+            {/* Botón Export */}
+            <div className="relative">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                className="px-4 py-2 bg-gray-900/50 border border-cyan-500/20 rounded-lg text-cyan-400 hover:bg-gray-900 font-mono text-xs flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Export
+              </button>
+              
+              {/* Menú de exportación */}
+              {showExportMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800/95 backdrop-blur-xl rounded-lg shadow-2xl border border-cyan-500/20 overflow-hidden">
+                  <div className="p-2">
+                    <button
+                      onClick={() => {
+                        exportToCSV(serverData?.stats?.topUsers || [], 'top_usuarios');
+                        setShowExportMenu(false);
+                        addNotification('Top usuarios exportados', 'success');
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-900 text-gray-300 hover:text-white transition-all font-mono text-xs"
+                    >
+                      <Users className="w-4 h-4" />
+                      Top Usuarios
+                    </button>
+                    <button
+                      onClick={() => {
+                        exportToCSV(serverData?.stats?.messageStats || [], 'estadisticas');
+                        setShowExportMenu(false);
+                        addNotification('Estadísticas exportadas', 'success');
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-900 text-gray-300 hover:text-white transition-all font-mono text-xs"
+                    >
+                      <BarChart3 className="w-4 h-4" />
+                      Estadísticas
+                    </button>
+                    <button
+                      onClick={() => {
+                        exportToCSV(serverData?.roles?.list || [], 'roles');
+                        setShowExportMenu(false);
+                        addNotification('Roles exportados', 'success');
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-900 text-gray-300 hover:text-white transition-all font-mono text-xs"
+                    >
+                      <Shield className="w-4 h-4" />
+                      Roles
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 bg-gray-900/50 border border-cyan-500/20 rounded-lg text-cyan-400 hover:bg-gray-900"
+            >
+              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+
             <button onClick={() => setView('servers')} className="px-4 py-2 bg-gray-900/50 border border-cyan-500/20 rounded-lg text-cyan-400 hover:bg-gray-900 font-mono text-xs">← Cambiar</button>
             <div className="relative">
               <button onClick={() => setShowUserMenu(!showUserMenu)} className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-lg flex items-center justify-center text-gray-900 font-bold hover:scale-110 transition-all">
@@ -464,7 +610,31 @@ const BotDashboard = () => {
         </aside>
         <main className="flex-1 p-6">{loading ? (<div className="flex items-center justify-center h-full"><div className="text-center"><div className="w-16 h-16 mx-auto mb-4 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div><p className="text-gray-400 font-mono">Cargando datos...</p></div></div>) : renderContent()}</main>
       </div>
-      <style>{`@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }`}</style>
+      
+      {/* Sistema de notificaciones */}
+      <div className="fixed bottom-4 right-4 z-50 space-y-2">
+        {notifications.map((notif) => (
+          <div
+            key={notif.id}
+            className={`px-6 py-3 rounded-lg shadow-2xl backdrop-blur-xl border flex items-center gap-3 animate-slide-in ${
+              notif.type === 'success'
+                ? 'bg-green-500/20 border-green-500/50 text-green-400'
+                : notif.type === 'error'
+                ? 'bg-red-500/20 border-red-500/50 text-red-400'
+                : 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
+            }`}
+          >
+            <Bell className="w-4 h-4" />
+            <span className="font-mono text-sm">{notif.message}</span>
+          </div>
+        ))}
+      </div>
+      
+      <style>{`
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .animate-slide-in { animation: slide-in 0.3s ease-out; }
+      `}</style>
     </div>
   );
 };
