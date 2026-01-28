@@ -55,23 +55,76 @@ const BotDashboard = () => {
   const handleDiscordAuth = async () => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setIsAuthenticated(true);
-      setUserInfo({
-        id: '123456789',
-        username: 'Admin',
-        discriminator: '0001',
-        avatar: null
+      const response = await fetch(`${API_URL}/auth/discord`);
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No se obtuvo URL de autenticación');
+      }
+    } catch (error) {
+      console.error('Error en autenticación:', error);
+      alert('Error al conectar con Discord. Asegúrate de que el servidor esté corriendo.');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code && !isAuthenticated) {
+      handleOAuthCallback(code);
+    }
+  }, []);
+
+  const handleOAuthCallback = async (code) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/callback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
       });
+      const data = await response.json();
+      if (data.user) {
+        setIsAuthenticated(true);
+        setUserInfo(data.user);
+        localStorage.setItem('discord_token', data.accessToken);
+        localStorage.setItem('user_info', JSON.stringify(data.user));
+        window.history.replaceState({}, document.title, '/');
+        const serversResponse = await fetch(`${API_URL}/user/servers`);
+        const serversData = await serversResponse.json();
+        setServers(serversData.servers || []);
+        setView('servers');
+      }
+    } catch (error) {
+      console.error('Error en callback OAuth:', error);
+      alert('Error al autenticar con Discord');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('discord_token');
+    const savedUser = localStorage.getItem('user_info');
+    if (savedToken && savedUser) {
+      setIsAuthenticated(true);
+      setUserInfo(JSON.parse(savedUser));
+      loadServers();
+    }
+  }, []);
+
+  const loadServers = async () => {
+    try {
       const response = await fetch(`${API_URL}/user/servers`);
       const data = await response.json();
       setServers(data.servers || []);
-      setView('servers');
+      if (data.servers && data.servers.length > 0) {
+        setView('servers');
+      }
     } catch (error) {
-      console.error('Error en autenticación:', error);
-      alert('Error al conectar con Discord');
-    } finally {
-      setLoading(false);
+      console.error('Error cargando servidores:', error);
     }
   };
 
@@ -95,6 +148,8 @@ const BotDashboard = () => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('discord_token');
+    localStorage.removeItem('user_info');
     setIsAuthenticated(false);
     setUserInfo(null);
     setServers([]);
