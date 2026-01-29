@@ -59,54 +59,54 @@ const BotDashboard = () => {
     }
   }, [view, selectedServer]);
 
-  const handleDiscordAuth = async () => {
+  // Manejo de autenticación con Discord - NUEVO FLUJO CON REDIRECT DIRECTO
+  const handleDiscordAuth = () => {
     setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/auth/discord`);
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('No se obtuvo URL de autenticación');
-      }
-    } catch (error) {
-      console.error('Error en autenticación:', error);
-      alert('Error al conectar con Discord. Asegúrate de que el servidor esté corriendo.');
-      setLoading(false);
-    }
+    // Redirect directo - el backend maneja todo
+    window.location.href = `${API_URL}/auth/discord`;
   };
 
+  // Detectar callback de Discord con datos codificados en URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (code && !isAuthenticated) {
-      handleOAuthCallback(code);
+    const authData = urlParams.get('auth');
+    const error = urlParams.get('error');
+    
+    if (error) {
+      console.error('❌ Error en autenticación:', error);
+      alert(`Error de autenticación: ${error}`);
+      setLoading(false);
+      return;
+    }
+    
+    if (authData && !isAuthenticated) {
+      handleAuthSuccess(authData);
     }
   }, []);
 
-  const handleOAuthCallback = async (code) => {
+  const handleAuthSuccess = async (encodedData) => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/auth/callback`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
-      });
-      const data = await response.json();
-      if (data.user) {
-        setIsAuthenticated(true);
-        setUserInfo(data.user);
-        localStorage.setItem('discord_token', data.accessToken);
-        localStorage.setItem('user_info', JSON.stringify(data.user));
-        window.history.replaceState({}, document.title, '/');
-        const serversResponse = await fetch(`${API_URL}/user/servers`);
-        const serversData = await serversResponse.json();
-        setServers(serversData.servers || []);
-        setView('servers');
-      }
+      // Decodificar datos del backend
+      const decoded = JSON.parse(atob(encodedData));
+      const { user, token } = decoded;
+      
+      console.log('✅ Autenticación exitosa:', user.username);
+      
+      setIsAuthenticated(true);
+      setUserInfo(user);
+      localStorage.setItem('discord_token', token);
+      localStorage.setItem('user_info', JSON.stringify(user));
+      
+      // Limpiar URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      
+      // Cargar servidores
+      await loadServers(token);
+      setView('servers');
     } catch (error) {
-      console.error('Error en callback OAuth:', error);
-      alert('Error al autenticar con Discord');
+      console.error('❌ Error procesando autenticación:', error);
+      alert('Error al procesar la autenticación');
     } finally {
       setLoading(false);
     }
@@ -122,16 +122,29 @@ const BotDashboard = () => {
     }
   }, []);
 
-  const loadServers = async () => {
+  const loadServers = async (token = null) => {
     try {
-      const response = await fetch(`${API_URL}/user/servers`);
+      const accessToken = token || localStorage.getItem('discord_token');
+      if (!accessToken) {
+        console.error('❌ No hay token de acceso');
+        return;
+      }
+      
+      const response = await fetch(`${API_URL}/user/servers`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
       const data = await response.json();
+      
+      console.log('📋 Servidores cargados:', data.servers?.length || 0);
+      
       setServers(data.servers || []);
       if (data.servers && data.servers.length > 0) {
         setView('servers');
       }
     } catch (error) {
-      console.error('Error cargando servidores:', error);
+      console.error('❌ Error cargando servidores:', error);
     }
   };
 
